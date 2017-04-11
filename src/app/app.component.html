@@ -1,0 +1,29 @@
+<button md-icon-button [mdMenuTriggerFor]="menu">
+    <md-icon>more_vert</md-icon>
+</button>
+
+<!-- 菜单导航 -->
+<md-menu #menu="mdMenu">
+    <a [routerLink]=" ['./home'] " md-menu-item>
+        <md-icon>home</md-icon>首页</a>
+    <a [routerLink]=" ['./task'] " md-menu-item>
+        任务管理
+    </a>
+     <a [routerLink]=" ['./about'] " md-menu-item>
+        关于
+    </a>
+</md-menu>
+
+
+<!-- 内容加载区域 -->
+<main>
+    <router-outlet></router-outlet>
+</main>
+<footer>
+    <div>
+        <span>create by <a [href]="url">kobepeng</a> built with:</span>
+        <a [href]="url">
+            <img [src]="angularclassLogo" width="30px">
+        </a>
+    </div>
+</footer>

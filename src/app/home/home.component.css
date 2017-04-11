@@ -1,1 +1,8 @@
 /*styles for home content only*/
+.task-news-title{
+  font-size: 30px;
+  margin-top:5px;
+}
+.read-state-checkbox{
+  width: 100px;
+}

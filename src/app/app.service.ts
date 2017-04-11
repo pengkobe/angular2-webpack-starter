@@ -6,31 +6,60 @@ export type InternalStateType = {
 
 @Injectable()
 export class AppState {
+  _state: InternalStateType = {};
+  _token: string;
 
-  public _state: InternalStateType = { };
+  constructor() {
+
+  }
+
+  get backendUrl() {
+    // http://localhost:3001/
+    // http://115.29.51.196:3001/
+    return " http://localhost:3001/";
+  }
 
   // already return a clone of the current state
-  public get state() {
+  get state() {
     return this._state = this._clone(this._state);
   }
   // never allow mutation
-  public set state(value) {
+  set state(value) {
     throw new Error('do not mutate the `.state` directly');
   }
 
-  public get(prop?: any) {
-    // use our state getter for the clone
-    const state = this.state;
-    return state.hasOwnProperty(prop) ? state[prop] : state;
+  get token() {
+    if (this._token) {
+      return this._token;
+    } else {
+      return localStorage.getItem("token");
+    }
+  }
+  set token(value) {
+    this._token = value;
+    localStorage.setItem("token", value);
   }
 
-  public set(prop: string, value: any) {
+
+  get(prop?: any) {
+    // use our state getter for the clone
+    const state = this.state;
+    return state.hasOwnProperty(prop) ? state[prop] : (localStorage.getItem(prop) ? localStorage.getItem(prop) : "");
+  }
+
+  set(prop: string, value: any) {
     // internally mutate our state
+    localStorage.setItem(prop, value);
     return this._state[prop] = value;
   }
 
+  clearLocalStorage() {
+    localStorage.clear();
+  }
+
+
   private _clone(object: InternalStateType) {
     // simple object clone
-    return JSON.parse(JSON.stringify( object ));
+    return JSON.parse(JSON.stringify(object));
   }
 }

@@ -1,0 +1,23 @@
+.task-nav-menu{
+  /*position: fixed;
+  left: 125px;
+  top:10px;*/
+}
+
+.md-list-item-blogger{
+  display: flex;
+}
+
+.md-list-item-blogger-edit{
+
+}
+
+.md-list-item{
+  height: auto !important;
+}
+.textarea-taskjs{
+  width: 300px;
+  height: 280px;
+  color: forestgreen;
+  margin-top: 20px;
+}

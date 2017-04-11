@@ -1,9 +1,6 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import {
   inject,
-  async,
-  TestBed,
-  ComponentFixture
+  TestBed
 } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import {
@@ -18,54 +15,39 @@ import { AppState } from '../app.service';
 import { HomeComponent } from './home.component';
 import { Title } from './title';
 
-describe(`Home`, () => {
-  let comp: HomeComponent;
-  let fixture: ComponentFixture<HomeComponent>;
-
-  // async beforeEach
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [HomeComponent],
-      schemas: [NO_ERRORS_SCHEMA],
-      providers: [
-        BaseRequestOptions,
-        MockBackend,
-        {
-          provide: Http,
-          useFactory: (backend: ConnectionBackend, defaultOptions: BaseRequestOptions) => {
-            return new Http(backend, defaultOptions);
-          },
-          deps: [MockBackend, BaseRequestOptions]
+describe('Home', () => {
+  // provide our implementations or mocks to the dependency injector
+  beforeEach(() => TestBed.configureTestingModule({
+    providers: [
+      BaseRequestOptions,
+      MockBackend,
+      {
+        provide: Http,
+        useFactory: function(backend: ConnectionBackend, defaultOptions: BaseRequestOptions) {
+          return new Http(backend, defaultOptions);
         },
-        AppState,
-        Title,
-      ]
-    })
-    .compileComponents(); // compile template and css
+        deps: [MockBackend, BaseRequestOptions]
+      },
+      AppState,
+      Title,
+      HomeComponent
+    ]
   }));
 
-  // synchronous beforeEach
-  beforeEach(() => {
-    fixture = TestBed.createComponent(HomeComponent);
-    comp = fixture.componentInstance;
+  it('should have default data', inject([ HomeComponent ], (home: HomeComponent) => {
+    expect(home.localState).toEqual({ value: '' });
+  }));
 
-    fixture.detectChanges(); // trigger initial data binding
-  });
+  it('should have a title', inject([ HomeComponent ], (home: HomeComponent) => {
+    expect(!!home.title).toEqual(true);
+  }));
 
-  it('should have default data', () => {
-    expect(comp.localState).toEqual({ value: '' });
-  });
-
-  it('should have a title', () => {
-    expect(!!comp.title).toEqual(true);
-  });
-
-  it('should log ngOnInit', () => {
+  it('should log ngOnInit', inject([ HomeComponent ], (home: HomeComponent) => {
     spyOn(console, 'log');
     expect(console.log).not.toHaveBeenCalled();
 
-    comp.ngOnInit();
+    home.ngOnInit();
     expect(console.log).toHaveBeenCalled();
-  });
+  }));
 
 });

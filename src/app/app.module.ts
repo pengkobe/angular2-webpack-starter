@@ -1,19 +1,11 @@
+import { NgModule, ApplicationRef } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import {
-  NgModule,
-  ApplicationRef
-} from '@angular/core';
-import {
-  removeNgStyles,
-  createNewHosts,
-  createInputTransfer
-} from '@angularclass/hmr';
-import {
-  RouterModule,
-  PreloadAllModules
-} from '@angular/router';
+import { RouterModule, PreloadAllModules } from '@angular/router';
+import { removeNgStyles, createNewHosts, createInputTransfer } from '@angularclass/hmr';
+import { MaterialModule } from '@angular/material';
+// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 /*
  * Platform and Environment providers/directives/pipes
@@ -27,15 +19,21 @@ import { AppState, InternalStateType } from './app.service';
 import { HomeComponent } from './home';
 import { AboutComponent } from './about';
 import { NoContentComponent } from './no-content';
-import { XLargeDirective } from './home/x-large';
+import { XLarge } from './home/x-large';
 
-import '../styles/styles.scss';
-import '../styles/headings.css';
+// ----- service
+import { HttpClient } from './_common/http-client';
+
+// -----
+import { TaskComponent } from './task';
+import { AddBloggerDialogComponent } from './task/addblogger';
+import { LoginDialogComponent } from './home/login';
 
 // Application wide providers
 const APP_PROVIDERS = [
   ...APP_RESOLVER_PROVIDERS,
-  AppState
+  AppState,
+  HttpClient
 ];
 
 type StoreType = {
@@ -48,19 +46,27 @@ type StoreType = {
  * `AppModule` is the main entry point into Angular2's bootstraping process
  */
 @NgModule({
-  bootstrap: [ AppComponent ],
+  bootstrap: [AppComponent],
+  entryComponents: [
+    AddBloggerDialogComponent,
+    LoginDialogComponent
+  ],
   declarations: [
     AppComponent,
     AboutComponent,
     HomeComponent,
     NoContentComponent,
-    XLargeDirective
+    XLarge,
+    TaskComponent,
+    AddBloggerDialogComponent,
+    LoginDialogComponent
   ],
   imports: [ // import Angular's modules
     BrowserModule,
     FormsModule,
     HttpModule,
-    RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(ROUTES, { useHash: true, preloadingStrategy: PreloadAllModules }),
+    MaterialModule.forRoot()
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,
@@ -68,16 +74,10 @@ type StoreType = {
   ]
 })
 export class AppModule {
+  constructor(public appRef: ApplicationRef, public appState: AppState) { }
 
-  constructor(
-    public appRef: ApplicationRef,
-    public appState: AppState
-  ) {}
-
-  public hmrOnInit(store: StoreType) {
-    if (!store || !store.state) {
-      return;
-    }
+  hmrOnInit(store: StoreType) {
+    if (!store || !store.state) return;
     console.log('HMR store', JSON.stringify(store, null, 2));
     // set state
     this.appState._state = store.state;
@@ -92,23 +92,24 @@ export class AppModule {
     delete store.restoreInputValues;
   }
 
-  public hmrOnDestroy(store: StoreType) {
-    const cmpLocation = this.appRef.components.map((cmp) => cmp.location.nativeElement);
+  hmrOnDestroy(store: StoreType) {
+    const cmpLocation = this.appRef.components.map(cmp => cmp.location.nativeElement);
     // save state
     const state = this.appState._state;
     store.state = state;
     // recreate root elements
     store.disposeOldHosts = createNewHosts(cmpLocation);
     // save input values
-    store.restoreInputValues  = createInputTransfer();
+    store.restoreInputValues = createInputTransfer();
     // remove styles
     removeNgStyles();
   }
 
-  public hmrAfterDestroy(store: StoreType) {
+  hmrAfterDestroy(store: StoreType) {
     // display new elements
     store.disposeOldHosts();
     delete store.disposeOldHosts;
   }
 
 }
+

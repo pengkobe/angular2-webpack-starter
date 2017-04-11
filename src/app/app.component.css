@@ -1,8 +1,19 @@
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
 html, body{
   height: 100%;
+  margin: 0;
   font-family: Arial, Helvetica, sans-serif
 }
 
-a.active {
+span.active {
   background-color: gray;
+}
+footer{
+  position: fixed;
+  bottom: 0px;
+  text-align: center;
+  width: 100%;
+}
+main{
+  margin: 50px 15% 0% 15%;
 }

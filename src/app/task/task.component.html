@@ -1,0 +1,41 @@
+<div class="task-nav-menu">
+    <button (click)="addBlogger()" color="accent" md-raised-button>模拟添加博主</button>
+    <button (click)="startTasks()" color="warn" md-raised-button *ngIf="!taskHasStarted">开启任务</button>
+    <md-chip color="primary" selected="true" *ngIf="taskHasStarted">任务已经全部启动！</md-chip>
+</div>
+<!-- 博主列表 -->
+<div>
+    <ul>
+        <h3 md-subheader class="task-news-title">博主列表</h3>
+        <li *ngFor="let b of bloggers">
+            <div md-line *ngIf="!b.isShow" class="md-list-item-blogger">
+                <md-icon md-list-avatar>folder</md-icon>
+                <h4 md-line>
+                    <a md-line href="{{b.url}}">{{b.name}}</a>
+                </h4>
+                <p md-line> {{b.createTime | date}} </p>
+                <h4 md-line>
+                    <a md-button (click)="editBlogger(b)">编辑</a>
+                </h4>
+            </div>
+            <div *ngIf="b.isShow" class="md-list-item-blogger-edit">
+                <div md-dialog-content>
+                    <md-input-container>
+                        <input md-input placeholder="博主姓名" [(ngModel)]="b.name">
+                    </md-input-container>
+                    <md-input-container>
+                        <input md-input placeholder="URL" [(ngModel)]="b.url">
+                    </md-input-container>
+                    <md-input-container>
+                        <textarea class="textarea-taskjs" md-input placeholder="任务JS" [(ngModel)]="b.taskjs" minRows=8></textarea>
+                    </md-input-container>
+                </div>
+                <div class="submit-botton-group" md-dialog-actions>
+                    <button md-raised-button (click)="submitEditedBlogger(b)">提交</button>
+                    <button md-button (click)="cancelEditBlogger(b)">取消</button>
+                </div>
+            </div>
+        </li>
+        <md-divider></md-divider>
+    </ul>
+</div>
